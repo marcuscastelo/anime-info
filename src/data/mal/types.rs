@@ -11,7 +11,7 @@ pub struct MALAnime {
     pub title: Option<String>,
     pub title_english: Option<String>,
     pub title_japanese: Option<String>,
-    pub title_synonyms: Vec<Option<String>>,
+    pub title_synonyms: Option<Vec<String>>,
     #[serde(rename = "type")]
     pub anime_type: Option<String>,
     pub source: Option<String>,
@@ -68,8 +68,8 @@ pub struct Trailer {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Title {
     #[serde(rename = "type")]
-    pub title_type: Option<String>,
-    pub title: Option<String>,
+    pub title_type: String,
+    pub title: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

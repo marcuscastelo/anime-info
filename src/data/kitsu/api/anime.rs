@@ -1,4 +1,4 @@
-use crate::kitsu::types::*;
+use crate::data::kitsu::types::*;
 use reqwest::blocking::Client;
 use serde::{Deserialize, Serialize};
 use url::form_urlencoded;
@@ -33,15 +33,17 @@ fn format_anime_url(name: &str) -> String {
 /// assert_eq!(animes.len(), 10);
 /// assert_eq!(animes[0].attributes.canonical_title, Some("That Time I Got Reincarnated as a Slime - Veldora's Journal".to_string()));
 /// ```
-pub fn anime(name: &str) -> Result<Vec<KitsuAnime>, reqwest::Error> {
+pub fn anime(name: &str) -> Vec<KitsuAnime> {
     let client = Client::new();
 
     let url = format_anime_url(name);
     client
         .get(url)
-        .send()?
+        .send()
+        .unwrap()
         .json::<AnimeResponse>()
         .map(|r| r.data)
+        .unwrap()
 }
 
 #[cfg(test)]
@@ -50,7 +52,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let animes = anime("Tensei shitara").unwrap();
+        let animes = anime("Tensei shitara");
         assert_eq!(animes.len(), 10);
         assert_eq!(
             animes[0].attributes.canonical_title,
