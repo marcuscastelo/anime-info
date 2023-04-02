@@ -1,4 +1,4 @@
-use crate::mal::types::*;
+use crate::data::mal::types::*;
 use reqwest::blocking::Client;
 use serde::{Deserialize, Serialize};
 use url::form_urlencoded;
@@ -12,8 +12,8 @@ pub struct AnimeResponse {
 }
 
 enum AnimeQuery<'a> {
-    FullById { id: i32 },
-    ById { id: i32 },
+    // FullById { id: i32 },
+    // ById { id: i32 },
     // TODO: Add more queries
     Search { q: &'a str },
 }
@@ -23,9 +23,9 @@ fn format_anime_url(query: &AnimeQuery) -> String {
 
     let params = match query {
         AnimeQuery::Search { q } => params.append_pair("q", q),
-        _ => {
-            todo!()
-        }
+        // _ => {
+        //     todo!()
+        // }
     };
 
     let params = params.finish().to_string();
@@ -113,7 +113,7 @@ pub fn get_anime_streaming() {
     todo!()
 }
 
-pub fn get_anime_search(search: &str) -> AnimeResponse {
+pub fn get_anime_search(search: &str) -> Vec<MALAnime> {
     let client = Client::new();
 
     let query = AnimeQuery::Search {
@@ -126,6 +126,7 @@ pub fn get_anime_search(search: &str) -> AnimeResponse {
         .send()
         .unwrap()
         .json::<AnimeResponse>()
+        .map(|r| r.data)
         .unwrap()
 }
 

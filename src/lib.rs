@@ -1,5 +1,5 @@
-pub mod kitsu;
-pub mod mal;
+pub mod data;
+pub mod use_cases;
 
 pub fn add(left: usize, right: usize) -> usize {
     left + right
