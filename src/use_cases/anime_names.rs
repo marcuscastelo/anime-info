@@ -2,6 +2,7 @@ use std::vec;
 
 use crate::data::mal::api::anime as MalAnimeApi;
 use crate::data::kitsu::api::anime as KitsuAnimeApi;
+use crate::utils::vec_utils::VecUtils;
 
 pub fn search_anime_names(anime_name: &str) -> Vec<String> {
     let mut names = vec![];
@@ -49,8 +50,7 @@ pub fn search_anime_names(anime_name: &str) -> Vec<String> {
         }
     }
 
-    names.dedup();
-    names
+    names.into_unique()
 }
 
 #[cfg(test)]
