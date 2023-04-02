@@ -1,5 +1,5 @@
 [package]
-name = "anime-info-rs"
+name = "anime-info"
 version = "0.1.0"
 edition = "2021"
 
