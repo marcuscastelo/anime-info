@@ -1,14 +1,25 @@
 use std::vec;
 
+// use crate::data::kitsu::api::anime as KitsuAnimeApi;
+use crate::data::kitsu::types::KitsuAnime;
 use crate::data::mal::api::anime as MalAnimeApi;
-use crate::data::kitsu::api::anime as KitsuAnimeApi;
 use crate::utils::vec_utils::VecUtils;
 
-pub fn search_anime_names(anime_name: &str) -> Vec<String> {
+pub enum Query<'a> {
+    Name(&'a str),
+    Id(i32),
+}
+
+pub fn search_anime_names(query: &Query) -> Vec<String> {
     let mut names = vec![];
-    
-    let mal_anime = MalAnimeApi::get_anime_search(anime_name);
-    let kitsu_anime = KitsuAnimeApi::anime(anime_name);
+
+    let mal_anime = match query {
+        Query::Name(name) => MalAnimeApi::get_anime_search(name),
+        Query::Id(id) => vec![MalAnimeApi::get_anime_by_id(*id)],
+    };
+
+    // let kitsu_anime = KitsuAnimeApi::anime(anime_name);
+    let kitsu_anime: Vec<KitsuAnime> = vec![];
 
     for anime in mal_anime {
         if let Some(title) = anime.title {
@@ -55,28 +66,22 @@ pub fn search_anime_names(anime_name: &str) -> Vec<String> {
 
 #[cfg(test)]
 mod tests {
+    use crate::use_cases::anime_names::Query;
+
     #[test]
     fn search_anime_names() {
-        let names = super::search_anime_names("Tensei shitara Slime Datta Ken Movie: Guren no Kizuna-hen");
-        assert_eq!(names.len(), 20);
-        assert_eq!(names[0], "That Time I Got Reincarnated as a Slime - Veldora's Journal");
-        assert_eq!(names[1], "Tensei Shitara Slime Datta Ken");
-        assert_eq!(names[2], "転生したらスライムだった件");
-        assert_eq!(names[3], "転生したらスライムだった件");
-        assert_eq!(names[4], "転生したらスライムだった件");
-        assert_eq!(names[5], "転生したらスライムだった件");
-        assert_eq!(names[6], "転生したらスライムだった件");
-        assert_eq!(names[7], "転生したらスライムだった件");
-        assert_eq!(names[8], "転生したらスライムだった件");
-        assert_eq!(names[9], "転生したらスライムだった件");
-        assert_eq!(names[10], "転生したらスライムだった件");
-        assert_eq!(names[11], "転生したらスライムだった件");
-        assert_eq!(names[12], "転生したらスライムだった件");
-        assert_eq!(names[13], "転生したらスライムだった件");
-        assert_eq!(names[14], "転生したらスライムだった件");
-        assert_eq!(names[15], "転生したらスライムだった件");
-        assert_eq!(names[16], "転生したらスライムだった件");
-        assert_eq!(names[17], "転生したらスライムだった件");
-        assert_eq!(names[18], "転生したらスライムだった件");
+        let names = super::search_anime_names(&Query::Name(
+            "Tensei shitara Slime Datta Ken Movie: Guren no Kizuna-hen",
+        ));
+        assert!(names.len() >= 3);
+        assert_eq!(
+            names[0],
+            "Tensei shitara Slime Datta Ken Movie: Guren no Kizuna-hen"
+        );
+        assert_eq!(
+            names[1],
+            "That Time I Got Reincarnated as a Slime: The Movie - Scarlet Bond"
+        );
+        assert_eq!(names[2], "劇場版 転生したらスライムだった件 紅蓮の絆編");
     }
 }

@@ -51,7 +51,16 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
+    fn test_format_anime_url() {
+        let url = format_anime_url("Tensei shitara");
+        assert_eq!(
+            url,
+            "https://kitsu.io/api/edge/anime?filter%5Btext%5D=Tensei+shitara&fields%5Banime%5D=titles%2CcanonicalTitle%2CabbreviatedTitles%2Csubtype"
+        );
+    }
+
+    #[test]
+    fn test_anime() {
         let animes = anime("Tensei shitara");
         assert_eq!(animes.len(), 10);
         assert_eq!(
